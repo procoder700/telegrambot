@@ -1,0 +1,12 @@
+pyTelegramBotAPI
+python-dotenv
+requests
+pillow
+flask
+torch
+torchvision
+torchaudio
+transformers
+diffusers
+accelerate
+pillow
