@@ -1,12 +1,10 @@
 import telebot
 import json
 import os
-import requests  # For communicating with Google Colab
 
 # Load environment variables
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 UPI_ID = os.getenv("UPI_ID")
-COLAB_API_URL = os.getenv("COLAB_API_URL")  # Google Colab URL for AI tasks
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
@@ -80,26 +78,4 @@ def handle_payment(message):
 
     bot.send_message(message.chat.id, "Payment verified! Your final product will be delivered shortly.")
 
-# 🔹 Handle AI Requests (Sends request to Google Colab)
-@bot.message_handler(func=lambda msg: msg.text in ["Professional CV", "Executive CV", "Artistic", "Fantasy", "Ultra-Realistic", "Order Logo"])
-def handle_ai_request(message):
-    user_id = message.chat.id
-    request_type = message.text
-
-    bot.send_message(user_id, "Processing your request... Please wait.")
-
-    if COLAB_API_URL:
-        try:
-            response = requests.get(f"{COLAB_API_URL}/generate?type={request_type}&user={user_id}")
-            if response.status_code == 200:
-                bot.send_message(user_id, "✅ Your sample is ready!")
-                bot.send_photo(user_id, response.content)  # Assuming Colab returns an image
-            else:
-                bot.send_message(user_id, "⚠ Error generating the sample. Please try again later.")
-        except Exception as e:
-            bot.send_message(user_id, f"⚠ API Error: {str(e)}")
-    else:
-        bot.send_message(user_id, "⚠ AI Generation is currently unavailable.")
-
-# Start Bot
 bot.polling()
